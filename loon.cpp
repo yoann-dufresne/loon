@@ -334,9 +334,9 @@ public:
             continue;
           }
 
-          // Cas trop haut
+          // Cas trop haut torp bas
           int z = current.z + dz;
-          if (z > this->prob.layers)
+          if (z == 0 || z > this->prob.layers)
             continue;
 
           // Create new coordinates
@@ -358,12 +358,12 @@ public:
 
           vector<int> targets = this->prob.getTargetsInRadius(next.x, next.y);
           for (int town : targets) {
-            if (this->sol.coverage[t][town] == 0)
+            if (this->sol.coverage[town][t] == 0)
               score++;
           }
 
           // Ajouter à la liste
-          if (score > GET(next.x, next.y, next.z, t)) {
+          if (score >= GET(next.x, next.y, next.z, t)) {
             SET(next.x, next.y, next.z, t, score);
             nextStep.insert (next);
 
@@ -383,12 +383,12 @@ public:
 
     // Traceback
     Coordz current = bestCoords;
-    for (int t=399 ; t>=0 ; t++) {
-      cout << current.x << ' ' << current.y << ' ' << current.z << endl;
+    for (int t=this->prob.nbTurns-1 ; t>=0 ; t--) {
       Coordz next = this->from[t][current.x][current.y][current.z-1];
-      cout << (400-t) << " " << (next.z - current.z) << endl;
+      this->sol.loons[t][idx] = (current.z - next.z);
       current = next;
     }
+    this->sol.initScore();
   }
 };
 
@@ -406,6 +406,8 @@ int main () {
 
   // Start cell
   cin >> prob.start.x >> prob.start.y;
+
+  prob.nbTurns = 10;
 
   // Targets
   for (int i=0 ; i<prob.nbTargets ; i++) {
@@ -433,7 +435,12 @@ int main () {
 
   Solution dynamic(prob);
   DynamicProgramming algo (prob, dynamic);
-  algo.addLoon(0);
+  for (int i=0 ; i<30 ; i++) {
+    algo.addLoon(i);
+    cerr << algo.sol.getScore() << endl;
+  }
+
+  algo.sol.print();
 
   return 0;
 }
