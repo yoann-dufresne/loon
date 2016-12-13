@@ -1,12 +1,8 @@
 #include <iostream>
 #include <vector>
-#include <algorithm>
 #include <ctime>
-#include <cstdlib>
-#include <cmath>
-#include <unordered_set>
-#include <fstream>
-#include <ctime>
+#include "Problem.h"
+#include "Solution.h"
 #include "Coordz.h"
 #include "DynamicProgramming.h"
 

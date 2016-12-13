@@ -1,4 +1,6 @@
 #include <vector>
+#include <iostream>
+#include <fstream>
 #include "Problem.h"
 
 
@@ -18,6 +20,7 @@ public:
 
   void load (string filename);
   void save (string filename);
+  void print ();
   void randomInit ();
   void initScore ();
   int getScore ();

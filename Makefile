@@ -1,11 +1,11 @@
 
 all: loon
 
-loon: loon.cpp
-	g++ -std=c++11 -o loon -g loon.cpp
+loon: loon.o DynamicProgramming.o Coordz.o Solution.o Problem.o
+	g++ -std=c++11 -o $@ -g $^
 
-coordz.o: coordz.cpp
-	g++ -std=c++11 -c coordz.cpp
+%.o: %.cpp
+	g++ -std=c++11 -c $<
 
 clean:
-	rm loon
+	rm *.o
