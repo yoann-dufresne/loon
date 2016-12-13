@@ -1,7 +1,7 @@
 
 all: loon
 
-loon: loon.cpp
+loon: *.cpp *.h
 	g++ -std=c++11 -o loon -g loon.cpp
 
 clean:
