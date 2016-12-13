@@ -1,3 +1,5 @@
+#include <unordered_set>
+
 
 #ifndef COORDZ_H
 #define COORDZ_H
@@ -8,7 +10,7 @@ public:
   int y;
 
   Coord(int x, int y);
-  Coord() {}
+  Coord();
 };
 
 class Coordz : public Coord {
