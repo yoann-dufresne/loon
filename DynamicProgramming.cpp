@@ -110,7 +110,7 @@ void DynamicProgramming::addLoon (int idx) {
         if (floor > 1 && score < floor)
           continue;
 
-        vector<int> targets = this->prob.getTargetsInRadius(next.x, next.y);
+        vector<int> & targets = this->prob.reachableTargets[next.x][next.y];
         for (int town : targets) {
           if (this->sol.coverage[town][t] == 0)
             score++;

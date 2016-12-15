@@ -1,4 +1,6 @@
 #include <vector>
+#include <cstdlib>
+#include <cmath>
 #include "Coordz.h"
 
 #ifndef PROBLEM_H
@@ -33,13 +35,14 @@ public:
 
   Coord start;
 
+  vector<vector<vector<int> > > reachableTargets;
+
   Problem (int rows, int cols, int layers);
   Problem ();
 
   Coord getWindDirection (int row, int col, int layer);
   void setWindDirection (int row, int col, int layer, Coord c);
   void setTarget (Coord c);
-  vector<int> getTargetsInRadius(int row, int col);
 };
 
 #endif

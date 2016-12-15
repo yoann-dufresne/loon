@@ -106,7 +106,7 @@ void Solution::initScore () {
         break;
 
       // Scan each town
-      vector<int> towns = this->problem.getTargetsInRadius(x, y);
+      vector<int> & towns = this->problem.reachableTargets[x][y];
       for (int town : towns) {
         this->coverage[town][t] += 1;
       }

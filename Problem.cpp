@@ -17,6 +17,8 @@ Problem::Problem (int rows, int cols, int layers) {
   this->nextTarget = 0;
   this->targetIdx = vector<vector<int> > (rows, vector<int>(cols, -1));
   this->winds = Winds(rows, cols, layers);
+
+  reachableTargets = vector<vector<vector<int> > > (rows, vector<vector<int> >(cols, vector<int>(0)));
 }
 
 Problem::Problem () {}
@@ -31,14 +33,13 @@ void Problem::setWindDirection (int row, int col, int layer, Coord c) {
 }
 
 void Problem::setTarget (Coord c) {
+  // Set the target
   this->targetIdx[c.x][c.y] = this->nextTarget;
   this->targets.push_back(c);
-  this->nextTarget += 1;
-}
 
-vector<int> Problem::getTargetsInRadius(int row, int col) {
-  vector<int> targets;
-
+  // Set up the target in reachable tiles
+  int row = c.x;
+  int col = c.y;
   for (int x=row-this->radius ; x<=row+this->radius ; x++) {
     if (x < 0 || x >= this->rows)
       continue;
@@ -52,12 +53,10 @@ vector<int> Problem::getTargetsInRadius(int row, int col) {
       if (dist > this->radius * this->radius)
         continue;
 
-      if (this->targetIdx[x][y] != -1) {
-        targets.push_back(this->targetIdx[x][y]);
-      }
+      this->reachableTargets[x][y].push_back(this->nextTarget);
     }
   }
 
-  return targets;
+  this->nextTarget += 1;
 }
 
