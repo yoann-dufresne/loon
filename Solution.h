@@ -13,17 +13,19 @@ class Solution {
 public:
   vector<vector<int> > coverage;
   vector<vector<int> > loons;
+  vector<vector<vector<int> > > scoreByTile;
   Problem problem;
+
+  int score;
 
   Solution (Problem prob);
   Solution ();
 
-  void load (string filename);
+  //void load (string filename);
   void save (string filename);
   void print ();
   void randomInit ();
-  void initScore ();
-  int getScore ();
+  void addLoon (vector<int> & path);
 };
 
 #endif

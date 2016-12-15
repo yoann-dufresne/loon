@@ -53,7 +53,7 @@ int main () {
   DynamicProgramming algo (prob, improve);
 
   srand(time(0));
-  for (int i=0 ; i<1000 ; i++) {
+  for (int i=0 ; i<1 ; i++) {
     // Remove a balloon
     int idx = rand() % prob.nbLoons;
 

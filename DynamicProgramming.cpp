@@ -74,8 +74,8 @@ void DynamicProgramming::addLoon (int idx) {
   for (int t=0 ; t<this->prob.nbTurns/**/ ; t++) {
     unordered_set<Coordz, my_coordz_hash> nextStep;
     cerr << t << " nb to process: " << toProcess.size() << " best: " << best << endl;
-    if (toProcess.size() > 10000) {
-      floor = floorScore(toProcess, 0, best, 10000, 1000, t-1);
+    if (toProcess.size() > 1000) {
+      floor = floorScore(toProcess, 0, best, 1000, 500, t-1);
     }
 
     for (Coordz current : toProcess) {

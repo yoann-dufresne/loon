@@ -3,12 +3,18 @@
 Solution::Solution (Problem prob) {
   this->loons = vector<vector<int> >(prob.nbTurns, vector<int>(prob.nbLoons));
   this->problem = prob;
+  // Couverture de chaque point d'intérêt à un moment donné.
   this->coverage = vector<vector<int> >(prob.nbTargets, vector<int>(prob.nbTurns, 0));
+  // Score local à chaque case pour une solution donnée
+  this->scoreByTile = vector<vector<vector<int> > > (prob.nbTurns, vector<vector<int> > (
+    prob.rows, vector<int> (prob.cols, 0)));
+
+  this->score = 0;
 }
 
 Solution::Solution () {}
 
-void Solution::load (string filename) {
+/*void Solution::load (string filename) {
   ifstream file;
   file.open (filename);
 
@@ -21,8 +27,7 @@ void Solution::load (string filename) {
   }
 
   file.close();
-  this->initScore();
-}
+}*/
 
 void Solution::save (string filename) {
   ofstream file;
@@ -67,61 +72,40 @@ void Solution::print () {
   }
 }
 
-void Solution::initScore () {
-  // Reinit
-  for (int town=0 ; town<this->problem.nbTargets ; town++) {
-    for (int t=0 ; t<this->problem.nbTurns ; t++) {
-      this->coverage[town][t] = 0;
-    }
-  }
-
+void Solution::addLoon (vector<int> & path) {
   // Follow the paths
-  int x, y, z;
-  for (int l=0 ; l<this->problem.nbLoons ; l++) {
-    x = this->problem.start.x;
-    y = this->problem.start.y;
-    z = 0;
+  int x = this->problem.start.x;
+  int y = this->problem.start.y;
+  int z = 0;
 
-    for (int t=0 ; t<this->problem.nbTurns ; t++) {
-      int dz = this->loons[t][l];
-      if (z == 0 && dz != 1)
-        continue;
+  for (int t=0 ; t<this->problem.nbTurns ; t++) {
+    int dz = path[t];
+    if (z == 0 && dz != 1)
+      continue;
 
-      // Go back to correct layers
-      z += dz;
-      if (z < 1)
-        z = 1;
-      if (z > this->problem.layers) {
-        z = this->problem.layers;
-      }
+    // Go back to correct layers
+    z += dz;
+    if (z < 1)
+      z = 1;
+    if (z > this->problem.layers) {
+      z = this->problem.layers;
+    }
 
-      // Update x and y
-      Coord wind = this->problem.getWindDirection(x, y, z);
-      
-      x += wind.x;
-      y = (y + wind.y + this->problem.cols) % this->problem.cols;
+    // Update x and y
+    Coord wind = this->problem.getWindDirection(x, y, z);
+    
+    x += wind.x;
+    y = (y + wind.y + this->problem.cols) % this->problem.cols;
 
-      // Exclude if out of range
-      if (x < 0 || x >= this->problem.rows)
-        break;
+    // Exclude if out of range
+    if (x < 0 || x >= this->problem.rows)
+      break;
 
-      // Scan each town
-      vector<int> & towns = this->problem.reachableTargets[x][y];
-      for (int town : towns) {
-        this->coverage[town][t] += 1;
-      }
+    // Update score
+    this->score += this->scoreByTile[t][x][y];
+    vector<int> & towns = this->problem.reachableTargets[x][y];
+    for (int town : towns) {
+      this->coverage[town][t] += 1;
     }
   }
-}
-
-int Solution::getScore () {
-  int score = 0;
-  for (int town=0 ; town<this->problem.nbTargets ; town++) {
-    for (int t=0 ; t<this->problem.nbTurns ; t++) {
-      if (this->coverage[town][t] > 0)
-        score++;
-    }
-  }
-
-  return score;
 }
