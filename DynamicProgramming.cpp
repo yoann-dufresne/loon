@@ -51,14 +51,16 @@ int DynamicProgramming::getBest (int nbTurns, int x, int y, int z) {
     return 0;
 
   // If saved return previous best
-  if (this->scores[this->prob.nbTurns-nbTurns][x][y][z] != -1)
-    return this->scores[this->prob.nbTurns-nbTurns][x][y][z];
+  if (z != 0 && this->scores[this->prob.nbTurns-nbTurns][x][y][z-1] != -1)
+    return this->scores[this->prob.nbTurns-nbTurns][x][y][z-1];
 
   int best = 0;
+  Coordz from;
   // test pour tous les z possibles
   for (int dz=-1 ; dz<=1 ; dz++) {
     if (z == 0 && dz != 1) {
-      // Cas du report de décollage
+      best = getBest (nbTurns-1, x, y, z);
+      from = Coordz(x,y,z);
     }
 
     // Hors limite en z
@@ -75,10 +77,11 @@ int DynamicProgramming::getBest (int nbTurns, int x, int y, int z) {
         + this->sol.scoreByTile[this->prob.nbTurns-nbTurns][next.x][next.y];
     if (score > best) {
       best = score;
+      from = Coordz(x, y, z);
     }
   }
 
-  this->scores[this->prob.nbTurns-nbTurns][x][y][z] = best;
+  this->scores[this->prob.nbTurns-nbTurns][x][y][z-1] = best;
   return best;
 }
 
