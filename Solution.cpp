@@ -7,7 +7,14 @@ Solution::Solution (Problem prob) {
   this->coverage = vector<vector<int> >(prob.nbTargets, vector<int>(prob.nbTurns, 0));
   // Score local à chaque case pour une solution donnée
   this->scoreByTile = vector<vector<vector<int> > > (prob.nbTurns, vector<vector<int> > (
-    prob.rows, vector<int> (prob.cols, 0)));
+      prob.rows, vector<int> (prob.cols)));
+  for (int t=0 ; t<prob.nbTurns ; t++) {
+    for (int row=0 ; row<prob.rows ; row++) {
+      for (int col=0 ; col<prob.cols ; col++) {
+        this->scoreByTile[t][row][col] = prob.reachableTargets[row][col].size();
+      }
+    }
+  }
 
   this->score = 0;
 }

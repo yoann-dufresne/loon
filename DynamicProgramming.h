@@ -21,6 +21,7 @@ public:
   int floorScore (unordered_set<Coordz, my_coordz_hash> elems, int minScore, int maxMinScore,
                  int nbElements, int epsilon, int t);
   void addLoon (int idx);
+  int getBest (int nbTurns, int x, int y, int z);
 };
 
 #endif

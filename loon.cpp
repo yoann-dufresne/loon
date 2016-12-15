@@ -49,10 +49,11 @@ int main () {
   }
 
   Solution improve(prob);
-  improve.load("results/sol_615947.txt");
   DynamicProgramming algo (prob, improve);
 
-  srand(time(0));
+  algo.addLoon(0);
+
+  /*srand(time(0));
   for (int i=0 ; i<1 ; i++) {
     // Remove a balloon
     int idx = rand() % prob.nbLoons;
@@ -67,7 +68,7 @@ int main () {
 
     // Save score
     algo.sol.save("results/sol_" + to_string(algo.sol.getScore()) + ".txt");
-  }
+  }*/
 
   return 0;
 }

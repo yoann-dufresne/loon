@@ -60,3 +60,12 @@ void Problem::setTarget (Coord c) {
   this->nextTarget += 1;
 }
 
+Coord Problem::getNextTile(int x, int y, int z) {
+  Coord & wind = this->winds.directions[x][y][z];
+
+  x += wind.x;
+  y = (y + wind.y + this->cols) % cols;
+
+  return Coord(x, y);
+}
+
