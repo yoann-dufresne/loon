@@ -17,10 +17,10 @@ DynamicProgramming::DynamicProgramming (Problem prob, Solution sol) {
       from[t][row] = (Coordz **) malloc (prob.cols * sizeof(Coordz *));
 
       for (int col=0 ; col<prob.cols ; col++) {
-        scores[t][row][col] = (int *) malloc (prob.layers * sizeof (int));
-        from[t][row][col] = (Coordz *) malloc (prob.layers * sizeof (Coordz));
+        scores[t][row][col] = (int *) malloc ((prob.layers+1) * sizeof (int));
+        from[t][row][col] = (Coordz *) malloc ((prob.layers+1) * sizeof (Coordz));
 
-        for (int layer=0 ; layer<prob.layers ; layer++) {
+        for (int layer=0 ; layer<=prob.layers ; layer++) {
           from[t][row][col][layer].x = -1;
         }
       }
@@ -34,7 +34,7 @@ void DynamicProgramming::reinitArray () {
   for (int t=0 ; t<this->prob.nbTurns ; t++)
     for (int row=0 ; row<this->prob.rows ; row++)
       for (int col=0 ; col<this->prob.cols ; col++)
-        for (int layer=0 ; layer<this->prob.layers ; layer++) {
+        for (int layer=0 ; layer<=this->prob.layers ; layer++) {
           scores[t][row][col][layer] = -1;
           from[t][row][col][layer].x = -1;
         }
@@ -43,7 +43,26 @@ void DynamicProgramming::reinitArray () {
 void DynamicProgramming::addLoon (int idx) {
   this->reinitArray();
 
-  cout << getBest (this->prob.nbTurns, this->prob.start.x, this->prob.start.y, 0) << endl;
+  this->bestScore = 0;
+
+  getBest (this->prob.nbTurns, this->prob.start.x, this->prob.start.y, 0);
+
+  // Traceback
+  vector<int> path (this->prob.nbTurns, 0);
+  Coordz current = Coordz(this->prob.start.x, this->prob.start.y, 0);
+
+  for (int t=0 ; t<this->prob.nbTurns ; t++) {
+    Coordz previous = this->from[t][current.x][current.y][current.z];
+    int dz = previous.z - current.z;
+    path[t] = dz;
+
+    if (current.x < 0 || current.x >= this->prob.rows)
+      break;
+
+    current = previous;
+  }
+
+  this->sol.addLoon(idx, path);
 }
 
 int DynamicProgramming::getBest (int nbTurns, int x, int y, int z) {
@@ -51,16 +70,17 @@ int DynamicProgramming::getBest (int nbTurns, int x, int y, int z) {
     return 0;
 
   // If saved return previous best
-  if (z != 0 && this->scores[this->prob.nbTurns-nbTurns][x][y][z-1] != -1)
-    return this->scores[this->prob.nbTurns-nbTurns][x][y][z-1];
+  if (z != 0 && this->scores[this->prob.nbTurns-nbTurns][x][y][z] != -1)
+    return this->scores[this->prob.nbTurns-nbTurns][x][y][z];
 
   int best = 0;
   Coordz from;
   // test pour tous les z possibles
   for (int dz=-1 ; dz<=1 ; dz++) {
     if (z == 0 && dz != 1) {
-      best = getBest (nbTurns-1, x, y, z);
-      from = Coordz(x,y,z);
+      /*best = getBest (nbTurns-1, x, y, z);
+      from = Coordz(x,y,z);*/
+      continue;
     }
 
     // Hors limite en z
@@ -77,11 +97,18 @@ int DynamicProgramming::getBest (int nbTurns, int x, int y, int z) {
         + this->sol.scoreByTile[this->prob.nbTurns-nbTurns][next.x][next.y];
     if (score > best) {
       best = score;
-      from = Coordz(x, y, z);
+      from = Coordz(next.x, next.y, z+dz);
     }
   }
 
-  this->scores[this->prob.nbTurns-nbTurns][x][y][z-1] = best;
+  this->scores[this->prob.nbTurns-nbTurns][x][y][z] = best;
+  this->from[this->prob.nbTurns-nbTurns][x][y][z] = from;
+
+  // Absolute best
+  if (best > this->bestScore) {
+    this->bestScore = best;
+  }
+
   return best;
 }
 

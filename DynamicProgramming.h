@@ -13,6 +13,7 @@ public:
   Coordz **** from;
   Solution sol;
   Problem prob;
+  int bestScore;
 
   DynamicProgramming (Problem prob, Solution sol);
   ~DynamicProgramming();

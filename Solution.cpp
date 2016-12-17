@@ -6,15 +6,7 @@ Solution::Solution (Problem prob) {
   // Couverture de chaque point d'intérêt à un moment donné.
   this->coverage = vector<vector<int> >(prob.nbTargets, vector<int>(prob.nbTurns, 0));
   // Score local à chaque case pour une solution donnée
-  this->scoreByTile = vector<vector<vector<int> > > (prob.nbTurns, vector<vector<int> > (
-      prob.rows, vector<int> (prob.cols)));
-  for (int t=0 ; t<prob.nbTurns ; t++) {
-    for (int row=0 ; row<prob.rows ; row++) {
-      for (int col=0 ; col<prob.cols ; col++) {
-        this->scoreByTile[t][row][col] = prob.reachableTargets[row][col].size();
-      }
-    }
-  }
+  this->computeLocalScore();
 
   this->score = 0;
 }
@@ -79,7 +71,24 @@ void Solution::print () {
   }
 }
 
-void Solution::addLoon (vector<int> & path) {
+void Solution::computeLocalScore () {
+  this->scoreByTile = vector<vector<vector<int> > > (this->problem.nbTurns, vector<vector<int> > (
+      this->problem.rows, vector<int> (this->problem.cols)));
+  for (int t=0 ; t<problem.nbTurns ; t++) {
+    for (int row=0 ; row<this->problem.rows ; row++) {
+      for (int col=0 ; col<this->problem.cols ; col++) {
+        this->scoreByTile[t][row][col] = 0;
+        for (int town : this->problem.reachableTargets[row][col]) {
+          if (this->coverage[town][t] == 0) {
+            this->scoreByTile[t][row][col] += 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+void Solution::addLoon (int idx, vector<int> & path) {
   // Follow the paths
   int x = this->problem.start.x;
   int y = this->problem.start.y;
@@ -87,6 +96,9 @@ void Solution::addLoon (vector<int> & path) {
 
   for (int t=0 ; t<this->problem.nbTurns ; t++) {
     int dz = path[t];
+
+    this->loons[t][idx] = dz;
+
     if (z == 0 && dz != 1)
       continue;
 
@@ -115,4 +127,6 @@ void Solution::addLoon (vector<int> & path) {
       this->coverage[town][t] += 1;
     }
   }
+
+  this->computeLocalScore();
 }

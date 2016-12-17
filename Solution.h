@@ -25,7 +25,8 @@ public:
   void save (string filename);
   void print ();
   void randomInit ();
-  void addLoon (vector<int> & path);
+  void addLoon (int idx, vector<int> & path);
+  void computeLocalScore ();
 };
 
 #endif

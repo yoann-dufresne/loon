@@ -51,7 +51,11 @@ int main () {
   Solution improve(prob);
   DynamicProgramming algo (prob, improve);
 
-  algo.addLoon(0);
+  for (int i=0 ; i<prob.nbTurns ; i++) {
+    algo.addLoon(i);
+    algo.sol.save("results/sol_" + to_string(algo.sol.score) + ".txt");
+    cout << algo.sol.score << endl;
+  }
 
   /*srand(time(0));
   for (int i=0 ; i<1 ; i++) {
