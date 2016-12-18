@@ -21,11 +21,12 @@ public:
   Solution (Problem prob);
   Solution ();
 
-  //void load (string filename);
+  void load (string filename);
   void save (string filename);
   void print ();
   void randomInit ();
   void addLoon (int idx, vector<int> & path);
+  void rmvLoon (int idx);
   void computeLocalScore ();
 };
 

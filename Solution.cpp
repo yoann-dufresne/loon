@@ -13,20 +13,21 @@ Solution::Solution (Problem prob) {
 
 Solution::Solution () {}
 
-/*void Solution::load (string filename) {
+void Solution::load (string filename) {
   ifstream file;
   file.open (filename);
 
-  for (int t=0 ; t<this->problem.nbTurns ; t++) {
-    for (int l=0 ; l<this->problem.nbLoons ; l++) {
-      file >> this->loons[t][l];
-      cout << this->loons[t][l] << ' ';
-    }
-    cout << endl;
-  }
+  vector<vector<int> > loons (this->problem.nbLoons, vector<int>(this->problem.nbTurns, 0));
+
+  for (int t=0 ; t<this->problem.nbTurns ; t++)
+    for (int l=0 ; l<this->problem.nbLoons ; l++)
+      file >> loons[l][t];
+
+  for (int l=0 ; l<this->problem.nbLoons ; l++)
+    this->addLoon(l, loons[l]);
 
   file.close();
-}*/
+}
 
 void Solution::save (string filename) {
   ofstream file;
@@ -126,6 +127,53 @@ void Solution::addLoon (int idx, vector<int> & path) {
     for (int town : towns) {
       this->coverage[town][t] += 1;
     }
+  }
+
+  this->computeLocalScore();
+}
+
+void Solution::rmvLoon (int idx) {
+  // Follow the paths
+  int x = this->problem.start.x;
+  int y = this->problem.start.y;
+  int z = 0;
+
+  for (int t=0 ; t<this->problem.nbTurns ; t++) {
+    int dz = this->loons[t][idx];
+
+    this->loons[t][idx] = dz;
+
+    if (z == 0 && dz != 1)
+      continue;
+
+    // Go back to correct layers
+    z += dz;
+    if (z < 1)
+      z = 1;
+    if (z > this->problem.layers) {
+      z = this->problem.layers;
+    }
+
+    // Update x and y
+    Coord wind = this->problem.getWindDirection(x, y, z);
+    
+    x += wind.x;
+    y = (y + wind.y + this->problem.cols) % this->problem.cols;
+
+    // Exclude if out of range
+    if (x < 0 || x >= this->problem.rows)
+      break;
+
+    // Update score
+    int dScore = 0;
+    vector<int> & towns = this->problem.reachableTargets[x][y];
+    for (int town : towns) {
+      this->coverage[town][t] -= 1;
+      if (this->coverage[town][t] == 0)
+        dScore++;
+    }
+
+    this->score -= dScore;
   }
 
   this->computeLocalScore();

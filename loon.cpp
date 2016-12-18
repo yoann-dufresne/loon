@@ -49,30 +49,34 @@ int main () {
   }
 
   Solution improve(prob);
+  cout << "load" << endl;
+  improve.load("results/sol_694757.txt");
+  cout << "score " << improve.score << endl;
   DynamicProgramming algo (prob, improve);
 
-  for (int i=0 ; i<prob.nbTurns ; i++) {
-    algo.addLoon(i);
-    algo.sol.save("results/sol_" + to_string(algo.sol.score) + ".txt");
-    cout << algo.sol.score << endl;
-  }
+  /*for (int i=0 ; i<prob.nbLoons ; i++) {
+    improve.rmvLoon(i);
+    cout << improve.score << endl;
+  }*/
 
-  /*srand(time(0));
-  for (int i=0 ; i<1 ; i++) {
+
+  // Opti
+
+  srand(time(0));
+  for (int i=0 ; i<1000 ; i++) {
     // Remove a balloon
     int idx = rand() % prob.nbLoons;
 
-    for (int t=0 ; t<prob.nbTurns ; t++)
-      algo.sol.loons[t][idx] = 0;
-    algo.sol.initScore();
-    cout << idx << ' ' << algo.sol.getScore() << endl;
-
     // Re optimize
-    algo.addLoon(idx);
+    cout << algo.sol.score << " -> ";
+    algo.sol.rmvLoon(idx);
+    cout << algo.sol.score << " -> ";
+    algo.addLoon(idx, 20);
+    cout << algo.sol.score << endl;
 
     // Save score
-    algo.sol.save("results/sol_" + to_string(algo.sol.getScore()) + ".txt");
-  }*/
+    algo.sol.save("results/sol_" + to_string(algo.sol.score) + ".txt");
+  }
 
   return 0;
 }
