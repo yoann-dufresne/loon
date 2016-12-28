@@ -16,6 +16,7 @@ public:
   int bestScore;
 
   DynamicProgramming (Problem prob, Solution sol);
+  DynamicProgramming ();
   ~DynamicProgramming();
 
   void reinitArray ();

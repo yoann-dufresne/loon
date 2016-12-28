@@ -1,5 +1,6 @@
 #include "DynamicProgramming.h"
 
+DynamicProgramming::DynamicProgramming () {};
 
 DynamicProgramming::DynamicProgramming (Problem prob, Solution sol) {
   this->sol = sol;

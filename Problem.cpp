@@ -28,8 +28,12 @@ Coord Problem::getWindDirection (int row, int col, int layer) {
 }
 
 void Problem::setWindDirection (int row, int col, int layer, Coord c) {
-  this->winds.directions[row][col][layer].x = c.x;
-  this->winds.directions[row][col][layer].y = c.y;
+  if (row + c.x < 0 || row + c.x >= this->rows)
+    this->winds.directions[row][col][layer].x = -1;
+  else
+    this->winds.directions[row][col][layer].x = row + c.x;
+  
+  this->winds.directions[row][col][layer].y = (col + c.y + this->cols) % this->cols;
 }
 
 void Problem::setTarget (Coord c) {
@@ -61,11 +65,6 @@ void Problem::setTarget (Coord c) {
 }
 
 Coord Problem::getNextTile(int x, int y, int z) {
-  Coord & wind = this->winds.directions[x][y][z];
-
-  x += wind.x;
-  y = (y + wind.y + this->cols) % cols;
-
-  return Coord(x, y);
+  return this->winds.directions[x][y][z];
 }
 

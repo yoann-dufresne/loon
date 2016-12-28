@@ -89,7 +89,7 @@ void Solution::computeLocalScore () {
   }
 }
 
-void Solution::addLoon (int idx, vector<int> & path) {
+void Solution::addLoon (int idx, vector<int> path) {
   // Follow the paths
   int x = this->problem.start.x;
   int y = this->problem.start.y;
@@ -112,13 +112,12 @@ void Solution::addLoon (int idx, vector<int> & path) {
     }
 
     // Update x and y
-    Coord wind = this->problem.getWindDirection(x, y, z);
-    
-    x += wind.x;
-    y = (y + wind.y + this->problem.cols) % this->problem.cols;
+    Coord next = this->problem.getWindDirection(x, y, z);
+    x = next.x;
+    y = next.y;
 
     // Exclude if out of range
-    if (x < 0 || x >= this->problem.rows)
+    if (x < 0)
       break;
 
     // Update score
@@ -155,13 +154,12 @@ void Solution::rmvLoon (int idx) {
     }
 
     // Update x and y
-    Coord wind = this->problem.getWindDirection(x, y, z);
-    
-    x += wind.x;
-    y = (y + wind.y + this->problem.cols) % this->problem.cols;
+    Coord next = this->problem.getWindDirection(x, y, z);
+    x = next.x;
+    y = next.y;
 
     // Exclude if out of range
-    if (x < 0 || x >= this->problem.rows)
+    if (x < 0)
       break;
 
     // Update score

@@ -4,7 +4,7 @@
 #include "Problem.h"
 #include "Solution.h"
 #include "Coordz.h"
-#include "DynamicProgramming.h"
+#include "HillClimbing.h"
 
 #define ROWS 75
 #define COLS 300
@@ -49,33 +49,16 @@ int main () {
   }
 
   Solution improve(prob);
-  cout << "load" << endl;
-  improve.load("results/sol_694757.txt");
+  //cout << "load" << endl;
+  improve.load("results/2loons_699764.txt");
   cout << "score " << improve.score << endl;
-  DynamicProgramming algo (prob, improve);
 
-  /*for (int i=0 ; i<prob.nbLoons ; i++) {
-    improve.rmvLoon(i);
-    cout << improve.score << endl;
-  }*/
+  HillClimbing hc (prob, improve);
 
-
-  // Opti
-
-  srand(time(0));
   for (int i=0 ; i<1000 ; i++) {
-    // Remove a balloon
-    int idx = rand() % prob.nbLoons;
-
-    // Re optimize
-    cout << algo.sol.score << " -> ";
-    algo.sol.rmvLoon(idx);
-    cout << algo.sol.score << " -> ";
-    algo.addLoon(idx, 20);
-    cout << algo.sol.score << endl;
-
-    // Save score
-    algo.sol.save("results/sol_" + to_string(algo.sol.score) + ".txt");
+    hc.oneStep(2);
+    int score = hc.dp.sol.score;
+    hc.dp.sol.save("results/2loons_" + to_string(score) + ".txt");
   }
 
   return 0;
