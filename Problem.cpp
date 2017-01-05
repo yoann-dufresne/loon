@@ -64,7 +64,7 @@ void Problem::setTarget (Coord c) {
   this->nextTarget += 1;
 }
 
-Coord Problem::getNextTile(int x, int y, int z) {
+Coord & Problem::getNextTile(int x, int y, int z) {
   return this->winds.directions[x][y][z];
 }
 

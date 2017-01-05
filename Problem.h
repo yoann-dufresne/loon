@@ -43,7 +43,7 @@ public:
   Coord getWindDirection (int row, int col, int layer);
   void setWindDirection (int row, int col, int layer, Coord c);
   void setTarget (Coord c);
-  Coord getNextTile(int x, int y, int z);
+  Coord & getNextTile(int x, int y, int z);
 };
 
 #endif

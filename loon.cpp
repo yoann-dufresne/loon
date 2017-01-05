@@ -47,15 +47,16 @@ int main () {
       }
     }
   }
+  cout << "Problem loaded" << endl;
 
   Solution improve(prob);
   //cout << "load" << endl;
-  improve.load("results/2loons_699764.txt");
+  //improve.load("results/2loons_699764.txt");
   cout << "score " << improve.score << endl;
 
   HillClimbing hc (prob, improve);
 
-  for (int i=0 ; i<1000 ; i++) {
+  for (int i=0 ; i<3 ; i++) {
     hc.oneStep(2);
     int score = hc.dp.sol.score;
     hc.dp.sol.save("results/2loons_" + to_string(score) + ".txt");
