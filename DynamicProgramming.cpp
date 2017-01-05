@@ -1,12 +1,17 @@
 #include "DynamicProgramming.h"
 
 
+#define IDX(t, x, y, z) (t*ROWS*COLS*(LAYERS+1) + x*COLS*(LAYERS+1) + y*(LAYERS+1) + z)
+
 
 DynamicProgramming::DynamicProgramming () {};
 
 DynamicProgramming::DynamicProgramming (Problem prob, Solution sol) {
   this->sol = sol;
   this->prob = prob;
+
+  scores = (int *) malloc (TURNS * COLS * ROWS * LAYERS * sizeof(int));
+  from = (Coordz *) malloc (TURNS * COLS * ROWS * LAYERS  * sizeof(Coordz));
 
   /*  scores = (int ****) malloc (prob.nbTurns * sizeof(int ***));
   from = (Coordz ****) malloc (prob.nbTurns * sizeof(Coordz ***));
@@ -16,15 +21,15 @@ DynamicProgramming::DynamicProgramming (Problem prob, Solution sol) {
     from[t] = (Coordz ***) malloc (prob.rows * sizeof(Coordz **));
 
     for (int row=0 ; row<prob.rows ; row++) {
-      scores[t][row] = (int **) malloc (prob.cols * sizeof(int *));
-      from[t][row] = (Coordz **) malloc (prob.cols * sizeof(Coordz *));
+      scores[t,row] = (int **) malloc (prob.cols * sizeof(int *));
+      from[t,row] = (Coordz **) malloc (prob.cols * sizeof(Coordz *));
 
       for (int col=0 ; col<prob.cols ; col++) {
-        scores[t][row][col] = (int *) malloc ((prob.layers+1) * sizeof (int));
-        from[t][row][col] = (Coordz *) malloc ((prob.layers+1) * sizeof (Coordz));
+        scores[t,row,col] = (int *) malloc ((prob.layers+1) * sizeof (int));
+        from[t,row,col] = (Coordz *) malloc ((prob.layers+1) * sizeof (Coordz));
 
         for (int layer=0 ; layer<=prob.layers ; layer++) {
-          from[t][row][col][layer].x = -1;
+          from[IDX(t,row,col,layer)].x = -1;
         }
       }
     }
@@ -38,8 +43,8 @@ void DynamicProgramming::reinitArray () {
     for (int row=0 ; row<this->prob.rows ; row++)
       for (int col=0 ; col<this->prob.cols ; col++)
         for (int layer=0 ; layer<=this->prob.layers ; layer++) {
-          scores[t][row][col][layer] = -1;
-          from[t][row][col][layer].x = -1;
+          scores[IDX(t,row,col,layer)] = -1;
+          from[IDX(t,row,col,layer)].x = -1;
         }
 }
 
@@ -57,7 +62,7 @@ void DynamicProgramming::addLoon (int idx, int maxStart) {
   Coordz current = Coordz(this->prob.start.x, this->prob.start.y, 0);
 
   for (int t=0 ; t<this->prob.nbTurns ; t++) {
-    Coordz previous = this->from[t][current.x][current.y][current.z];
+    Coordz previous = this->from[IDX(t,current.x,current.y,current.z)];
 
     if (previous.x < 0 || previous.x >= this->prob.rows) {
       break;
@@ -83,8 +88,8 @@ int DynamicProgramming::getBest (int nbTurns, Coordz & currentTile) {
   int currentTurn = this->prob.nbTurns-nbTurns;
 
   // If saved return previous best
-  if (currentTile.z != 0 && this->scores[currentTurn][currentTile.x][currentTile.y][currentTile.z] != -1)
-    return this->scores[currentTurn][currentTile.x][currentTile.y][currentTile.z];
+  if (currentTile.z != 0 && this->scores[IDX(currentTurn,currentTile.x,currentTile.y,currentTile.z)] != -1)
+    return this->scores[IDX(currentTurn,currentTile.x,currentTile.y,currentTile.z)];
 
   int best = 0;
   Coordz from;
@@ -121,8 +126,8 @@ int DynamicProgramming::getBest (int nbTurns, Coordz & currentTile) {
     }
   }
 
-  this->scores[currentTurn][currentTile.x][currentTile.y][currentTile.z] = best;
-  this->from[currentTurn][currentTile.x][currentTile.y][currentTile.z] = from;
+  this->scores[IDX(currentTurn,currentTile.x,currentTile.y,currentTile.z)] = best;
+  this->from[IDX(currentTurn,currentTile.x,currentTile.y,currentTile.z)] = from;
 
   // Absolute best
   if (best > this->bestScore) {

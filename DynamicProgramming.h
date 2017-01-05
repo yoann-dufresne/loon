@@ -13,8 +13,8 @@
 
 class DynamicProgramming {
 public:
-  int scores[TURNS][ROWS][COLS][LAYERS+1];
-  Coordz from[TURNS][ROWS][COLS][LAYERS+1];
+  int * scores;
+  Coordz * from;
   Solution sol;
   Problem prob;
   int bestScore;
