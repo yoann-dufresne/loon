@@ -50,7 +50,7 @@ void HillClimbing::oneStep (int nbLoons) {
 	// Compute new score
 	for (int val : loons) {
 		cout << "Recomputation for " << val << endl;
-		this->dp.addLoon(val, 20);
+		this->dp.addLoonIter(val);
 	}
 
 	// Reload old balloons if score is worse

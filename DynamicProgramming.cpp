@@ -1,7 +1,8 @@
 #include "DynamicProgramming.h"
 
 
-#define IDX(t, x, y, z) (t*ROWS*COLS*(LAYERS+1) + x*COLS*(LAYERS+1) + y*(LAYERS+1) + z)
+//#define IDX(t, x, y, z) ((t)*ROWS*COLS*(LAYERS) + (x)*COLS*(LAYERS) + (y)*(LAYERS) + (z))
+#define IDX(t, x, y, z) ((t)*ROWS*COLS*LAYERS + (x)*COLS*LAYERS + (y)*LAYERS + (z)-1)
 
 
 DynamicProgramming::DynamicProgramming () {};
@@ -10,45 +11,21 @@ DynamicProgramming::DynamicProgramming (Problem prob, Solution sol) {
   this->sol = sol;
   this->prob = prob;
 
-  scores = (int *) malloc (TURNS * COLS * ROWS * LAYERS * sizeof(int));
-  from = (Coordz *) malloc (TURNS * COLS * ROWS * LAYERS  * sizeof(Coordz));
-
-  /*  scores = (int ****) malloc (prob.nbTurns * sizeof(int ***));
-  from = (Coordz ****) malloc (prob.nbTurns * sizeof(Coordz ***));
-
-  for (int t=0 ; t<prob.nbTurns ; t++) {
-    scores[t] = (int ***) malloc (prob.rows * sizeof(int **));
-    from[t] = (Coordz ***) malloc (prob.rows * sizeof(Coordz **));
-
-    for (int row=0 ; row<prob.rows ; row++) {
-      scores[t,row] = (int **) malloc (prob.cols * sizeof(int *));
-      from[t,row] = (Coordz **) malloc (prob.cols * sizeof(Coordz *));
-
-      for (int col=0 ; col<prob.cols ; col++) {
-        scores[t,row,col] = (int *) malloc ((prob.layers+1) * sizeof (int));
-        from[t,row,col] = (Coordz *) malloc ((prob.layers+1) * sizeof (Coordz));
-
-        for (int layer=0 ; layer<=prob.layers ; layer++) {
-          from[IDX(t,row,col,layer)].x = -1;
-        }
-      }
-    }
-    }*/
+  scores = (int *) malloc ((long)(TURNS+1) * (long)COLS * (long)ROWS * (long)LAYERS * sizeof(int));
 }
 
 DynamicProgramming::~DynamicProgramming() {};
 
 void DynamicProgramming::reinitArray () {
-  for (int t=0 ; t<this->prob.nbTurns ; t++)
-    for (int row=0 ; row<this->prob.rows ; row++)
-      for (int col=0 ; col<this->prob.cols ; col++)
-        for (int layer=0 ; layer<=this->prob.layers ; layer++) {
+  for (int t=0 ; t<=TURNS ; t++)
+    for (int row=0 ; row<ROWS ; row++)
+      for (int col=0 ; col<COLS ; col++)
+        for (int layer=1 ; layer<=LAYERS ; layer++) {
           scores[IDX(t,row,col,layer)] = -1;
-          from[IDX(t,row,col,layer)].x = -1;
         }
 }
 
-int MAX;
+/*int MAX;
 void DynamicProgramming::addLoon (int idx, int maxStart) {
   this->reinitArray();
   this->bestScore = 0;
@@ -79,9 +56,67 @@ void DynamicProgramming::addLoon (int idx, int maxStart) {
   }
 
   this->sol.addLoon(idx, path);
+}*/
+
+
+void DynamicProgramming::fillArray () {
+  //srand(time(0));
+
+  Coord & first = this->prob.getNextTile (this->prob.start.x, this->prob.start.y, 1);
+  int best = 0;
+
+  //                                       /!!!/
+  for (int currentTurn=0 ; currentTurn<TURNS-1 ; currentTurn++ ) {
+    int firstScore = scores[IDX(currentTurn, first.x, first.y, 1)];
+    if (firstScore == -1)
+      scores[IDX(currentTurn, first.x, first.y, 1)] = this->sol.scoreByTile[currentTurn][first.x][first.y];
+    int nbCalc = 0;
+
+    for (int r=0 ; r<ROWS ; r++) {
+      for (int c=0 ; c<COLS ; c++) {
+        for (int l=1 ; l<=LAYERS ; l++) {
+          // Si il existe un moyen d'arriver sur cette case, alors il faut continuer
+          int currentScore = scores[IDX(currentTurn, r, c, l)];
+          if (currentScore != -1) {
+            nbCalc++;
+            // Toutes les possibilités de changement d'altitude
+            for (int dz=-1 ; dz<=1 ; dz++) {
+              // Cas critiques
+              if (l + dz <= 0 || l + dz > LAYERS)
+                continue;
+
+              Coord & next = this->prob.getNextTile (r, c, l+dz);
+              // Hors limite en x
+              if (next.x < 0 || next.x >= this->prob.rows) {
+                continue;
+              }
+
+              // Calcule le score et l'ajoute si meilleur
+              int score = currentScore + this->sol.scoreByTile[currentTurn+1][next.x][next.y];
+              if (score > scores[IDX(currentTurn+1, next.x, next.y, l+dz)])
+                scores[IDX(currentTurn+1, next.x, next.y, l+dz)] = score;
+
+              if (score > best)
+                best = score;
+            }
+          }
+        }
+      }
+    }
+
+    cout << nbCalc << endl;
+  }
+
+  cout << best << endl;
 }
 
-int DynamicProgramming::getBest (int nbTurns, Coordz & currentTile) {
+void DynamicProgramming::addLoonIter (int idx) {
+  this->reinitArray();
+
+  fillArray();
+}
+
+/*int DynamicProgramming::getBest (int nbTurns, Coordz & currentTile) {
   if (nbTurns == 0)
     return 0;
 
@@ -135,7 +170,7 @@ int DynamicProgramming::getBest (int nbTurns, Coordz & currentTile) {
   }
 
   return best;
-}
+}*/
 
 
 

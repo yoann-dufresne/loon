@@ -50,7 +50,7 @@ int main () {
   cout << "Problem loaded" << endl;
 
   Solution improve(prob);
-  //cout << "load" << endl;
+  /*/cout << "load" << endl;
   //improve.load("results/2loons_699764.txt");
   cout << "score " << improve.score << endl;
 
@@ -60,7 +60,12 @@ int main () {
     hc.oneStep(2);
     int score = hc.dp.sol.score;
     hc.dp.sol.save("results/2loons_" + to_string(score) + ".txt");
-  }
+  }*/
+
+  DynamicProgramming dyn (prob, improve);
+  cout << "Dynamic programming" << endl;
+  
+  dyn.addLoonIter(0);
 
   return 0;
 }
