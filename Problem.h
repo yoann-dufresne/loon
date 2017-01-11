@@ -1,7 +1,19 @@
 #include <vector>
 #include <cstdlib>
+#include <iostream>
 #include <cmath>
 #include "Coordz.h"
+
+#define ROWS 3
+#define COLS 5
+#define LAYERS 2
+#define TURNS 3
+
+// #define ROWS 75
+// #define COLS 300
+// #define LAYERS 8
+// #define TURNS 400
+
 
 #ifndef PROBLEM_H
 #define PROBLEM_H
@@ -36,6 +48,7 @@ public:
   Coord start;
 
   vector<vector<vector<int> > > reachableTargets;
+  vector<vector<vector<vector<Coordz> > > > origins;
 
   Problem (int rows, int cols, int layers);
   Problem ();

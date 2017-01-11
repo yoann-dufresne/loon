@@ -16,9 +16,13 @@ Problem::Problem (int rows, int cols, int layers) {
 
   this->nextTarget = 0;
   this->targetIdx = vector<vector<int> > (rows, vector<int>(cols, -1));
-  this->winds = Winds(rows, cols, layers);
+  this->winds = Winds(rows, cols, layers+1);
 
   reachableTargets = vector<vector<vector<int> > > (rows, vector<vector<int> >(cols, vector<int>(0)));
+  // x, y, z, liste
+  this->origins = vector<vector<vector<vector<Coordz> > > > (
+    rows, vector<vector<vector<Coordz> > >(
+      cols, vector<vector<Coordz> >(layers+1)));
 }
 
 Problem::Problem () {}
@@ -28,12 +32,30 @@ Coord Problem::getWindDirection (int row, int col, int layer) {
 }
 
 void Problem::setWindDirection (int row, int col, int layer, Coord c) {
+  // Set direction
   if (row + c.x < 0 || row + c.x >= this->rows)
     this->winds.directions[row][col][layer].x = -1;
   else
     this->winds.directions[row][col][layer].x = row + c.x;
   
   this->winds.directions[row][col][layer].y = (col + c.y + this->cols) % this->cols;
+
+
+  // Set origins
+  if (this->winds.directions[row][col][layer].x != -1) {
+    for (int dz=-1 ; dz<=1 ; dz++) {
+      if (layer+dz > 0 && layer+dz <= this->layers) {
+        this->origins[this->winds.directions[row][col][layer].x]
+                     [this->winds.directions[row][col][layer].y]
+                     [layer].push_back(Coordz(row, col, layer+dz));
+
+        /*if (row == 2 && col == 0 && layer == 2) {
+          cout << this->winds.directions[row][col][layer].x << " " << this->winds.directions[row][col][layer].y << " ";
+          cout << layer << " <- " << row << " " << col << " " << (layer+dz) << endl;
+        }*/
+      }
+    }
+  }
 }
 
 void Problem::setTarget (Coord c) {

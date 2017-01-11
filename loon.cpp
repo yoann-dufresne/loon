@@ -6,10 +6,6 @@
 #include "Coordz.h"
 #include "HillClimbing.h"
 
-#define ROWS 75
-#define COLS 300
-#define LAYERS 8
-
 
 using namespace std;
 
@@ -50,22 +46,13 @@ int main () {
   cout << "Problem loaded" << endl;
 
   Solution improve(prob);
-  /*/cout << "load" << endl;
-  //improve.load("results/2loons_699764.txt");
-  cout << "score " << improve.score << endl;
 
-  HillClimbing hc (prob, improve);
-
-  for (int i=0 ; i<3 ; i++) {
-    hc.oneStep(2);
-    int score = hc.dp.sol.score;
-    hc.dp.sol.save("results/2loons_" + to_string(score) + ".txt");
-  }*/
-
+  cout << "Solution created" << endl;
   DynamicProgramming dyn (prob, improve);
   cout << "Dynamic programming" << endl;
   
   dyn.addLoonIter(0);
+  dyn.print();
 
   return 0;
 }
