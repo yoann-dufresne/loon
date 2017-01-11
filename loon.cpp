@@ -52,7 +52,6 @@ int main () {
   cout << "Dynamic programming" << endl;
   
   dyn.addLoonIter(0);
-  dyn.print();
 
   return 0;
 }

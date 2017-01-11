@@ -112,13 +112,13 @@ vector<int> DynamicProgramming::backtrack () {
   //cout << score << " at t=" << this->bestTime << endl;
 
   for (int t=this->bestTime ; t>=0 ; t--) {
-    // Save
-    /*if (current.x != previous.x && current.y != previous.y && current.z != previous.z) {
-
-    }*/
+    //cout << "time: " << t << endl;
 
     // Cas de base
     if (t == 0 || candidates.size() == 0) {
+      // Ajoute la première transition
+      path.push_back(previous.z - 1);
+
       // Ajoute le décollage
       path.push_back(1);
       // Ajoute toutes les attentes au sol
@@ -137,9 +137,11 @@ vector<int> DynamicProgramming::backtrack () {
         current = candidates[rand() % candidates.size()];
 
       // Ajout du dz
-      cout << previous.x << " " << previous.y << " " << previous.z << "   ";
-      cout << current.x << " " << current.y << " " << current.z << endl;
-      path.push_back(current.z - previous.z);
+      if (current.x != previous.x || current.y != previous.y || current.z != previous.z) {
+        //cout << previous.x << " " << previous.y << " " << previous.z << " <- ";
+        //cout << current.x << " " << current.y << " " << current.z << endl;
+        path.push_back(previous.z - current.z);
+      }
 
       //cout << "Current " << current.x << " " << current.y << " " << current.z << endl;
 

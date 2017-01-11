@@ -4,15 +4,15 @@
 #include <cmath>
 #include "Coordz.h"
 
-#define ROWS 3
-#define COLS 5
-#define LAYERS 2
-#define TURNS 3
+// #define ROWS 3
+// #define COLS 5
+// #define LAYERS 2
+// #define TURNS 3
 
-// #define ROWS 75
-// #define COLS 300
-// #define LAYERS 8
-// #define TURNS 400
+#define ROWS 75
+#define COLS 300
+#define LAYERS 8
+#define TURNS 400
 
 
 #ifndef PROBLEM_H
