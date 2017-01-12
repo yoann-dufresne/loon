@@ -51,6 +51,7 @@ int main () {
   DynamicProgramming dyn (prob, improve);
   cout << "Dynamic programming" << endl;
   
+  // Init
   for (int i=0 ; i<prob.nbLoons ; i++) {
     cout << "Optimisation loon " << i << endl;
     //dyn.sol.printScoreByTile ();
@@ -60,6 +61,15 @@ int main () {
     //dyn.sol.printScoreByTile();
     cout << score << " -> " << dyn.sol.score << endl;
     dyn.sol.save("iter/TestIter_" + to_string(dyn.sol.score) + ".txt");
+  }
+
+  // Hillclimbing
+  HillClimbing hc = HillClimbing(prob, dyn.sol);
+  while (true) {
+    hc.oneStep(1);
+    hc.dp.sol.save("iter/Hillclimbing_" + to_string(hc.dp.sol.score) + ".txt");
+    hc.oneStep(2);
+    hc.dp.sol.save("iter/Hillclimbing_" + to_string(hc.dp.sol.score) + ".txt");
   }
 
   return 0;
