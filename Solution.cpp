@@ -72,6 +72,19 @@ void Solution::print () {
   }
 }
 
+void Solution::printScoreByTile () {
+  for (int t=0 ; t<TURNS ; t++) {
+    cout << "t=" << t << endl;
+    for (int r=0 ; r<ROWS ; r++) {
+      for (int c=0 ; c<COLS ; c++) {
+        cout << this->scoreByTile[t][r][c] << " ";
+      }
+      cout << endl;
+    }
+    cout << endl;
+  }
+}
+
 void Solution::computeLocalScore () {
   this->scoreByTile = vector<vector<vector<int> > > (this->problem.nbTurns, vector<vector<int> > (
       this->problem.rows, vector<int> (this->problem.cols)));

@@ -24,6 +24,7 @@ public:
   void load (string filename);
   void save (string filename);
   void print ();
+  void printScoreByTile ();
   void randomInit ();
   void addLoon (int idx, vector<int> path);
   void rmvLoon (int idx);

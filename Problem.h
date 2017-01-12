@@ -7,7 +7,7 @@
 // #define ROWS 3
 // #define COLS 5
 // #define LAYERS 2
-// #define TURNS 3
+// #define TURNS 8
 
 #define ROWS 75
 #define COLS 300

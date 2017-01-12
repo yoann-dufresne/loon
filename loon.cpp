@@ -51,7 +51,16 @@ int main () {
   DynamicProgramming dyn (prob, improve);
   cout << "Dynamic programming" << endl;
   
-  dyn.addLoonIter(0);
+  for (int i=0 ; i<prob.nbLoons ; i++) {
+    cout << "Optimisation loon " << i << endl;
+    //dyn.sol.printScoreByTile ();
+    int score = dyn.sol.score;
+    dyn.addLoonIter(i);
+    //dyn.print();
+    //dyn.sol.printScoreByTile();
+    cout << score << " -> " << dyn.sol.score << endl;
+    dyn.sol.save("iter/TestIter_" + to_string(dyn.sol.score) + ".txt");
+  }
 
   return 0;
 }
